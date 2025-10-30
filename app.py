@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
@@ -24,7 +24,7 @@ def web():
         <html>
             <body>
                 <h1>web-сервер на flask</h1>
-                <a href="/authot">author</a>
+                <a href="/author">author</a>
             </body>
         </html>"""
 
@@ -79,3 +79,8 @@ def counter():
     </body>
 </html>
 '''
+
+
+@app.route("/info")
+def info():
+    return redirect("/author")
