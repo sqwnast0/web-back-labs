@@ -8,33 +8,71 @@ def not_found(err):
     return "нет такой страницы", 404
 
 @app.route("/")
+
+@app.route("/index")
+def index():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+        <title>НГТУ, ФБ, Лабораторные работы</title>
+    </head>
+    <body>
+        <header>
+            <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
+        </header>
+        
+        <main>
+            <nav>
+                <ul>
+                    <li><a href="/lab1">Первая лабораторная</a></li>
+                </ul>
+            </nav>
+        </main>
+        
+        <footer>
+            <hr>
+            &copy; Чикирисова Анастасия Вячеславовна, ФБИ-33, 3 курс, 2025
+        </footer>
+    </body>
+</html>'''
+
 @app.route("/lab1")
 def lab1():
-    return """<!doctype html>
-        <html>
-            <body>
-                <ul>
-                    <h1>Лабораторная работа 1</h1>
-                    <li><a href="/lab1/author">author</a></li>
-                    <li><a href="/lab1/web">web</a></li>
-                    <li><a href="/lab1/image">image</a></li>
-                    <li><a href="/lab1/counter">counter</a></li>
-                </ul>
-            </body>
-        </html>"""    
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+    </head>
+    <body>
+        <ul>
+            <h1>Лабораторная работа 1</h1>
+            <li><a href="/lab1/author">author</a></li>
+            <li><a href="/lab1/web">web</a></li>
+            <li><a href="/lab1/image">image</a></li>
+            <li><a href="/lab1/counter">counter</a></li>
+        </ul>
+    </body>
+</html>'''  
 
 @app.route("/lab1/web")
 def web():
-    return """<!doctype html>
-        <html>
-            <body>
-                <h1>web-сервер на flask</h1>
-                <a href="/author">author</a>
-            </body>
-        </html>""", 200, {
-            'X-Server': 'sample',
-            'Content-Type': 'text/plain; charset=utf-8'
-        }
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') +'''">
+    </head>
+    <body>
+        <h1>web-сервер на flask</h1>
+        <a href="/lab1/author">author</a>
+    </body>
+</html>''', 200, {
+        'X-Server': 'sample',
+        'Content-Type': 'text/plain; charset=utf-8'
+}
 
 @app.route("/lab1/author")
 def author():
@@ -42,21 +80,24 @@ def author():
     group = "ФБИ-33"
     faculty = "ФБ"
     
-    return """<!doctype html>
-        <html>
-            <body>
-                <p>Студент: """ + name + """</p>
-                <p>Группа: """ + group + """</p>
-                <p>Факультет: """ + faculty + """</p>
-                <a href="/web">web</a>
-            </body>
-        </html>"""
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+    </head>           
+    <body>
+        <p>Студент: ''' + name + '''</p>
+        <p>Группа: ''' + group + '''</p>
+        <p>Факультет: ''' + faculty + '''</p>
+        <a href="/web">web</a>
+    </body>
+</html>'''
 
 
 @app.route('/lab1/image') 
 def image():
     path = url_for("static", filename="oak.jpg")
-    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -67,8 +108,7 @@ def image():
         <h1>Дyб</h1>
         <img src="''' + path + '''">
     </body>
-</html>
-'''
+</html>'''
 
 count = 0
 
@@ -82,6 +122,9 @@ def counter():
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') +'''">
+    </head>
     <body>
         Сколько раз вы сюда заходили: ''' + str(count) + '''
         <hr>
