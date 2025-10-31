@@ -45,10 +45,19 @@ def lab1():
 <html>
     <head>
         <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+        <title>Лабораторная 1</title>
     </head>
     <body>
+        <h1>Лабораторная работа 1</h1>
+        <p>Flask — фреймворк для создания веб-приложений на языке
+        программирования Python, использующий набор инструментов
+        Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
+        называемых микрофреймворков — минималистичных каркасов
+        веб-приложений, сознательно предоставляющих лишь самые базовые возможности.</p>
+        
+        <a href="/">На главную</a>
+        
         <ul>
-            <h1>Лабораторная работа 1</h1>
             <li><a href="/lab1/author">author</a></li>
             <li><a href="/lab1/web">web</a></li>
             <li><a href="/lab1/image">image</a></li>
@@ -141,7 +150,7 @@ def counter():
 def reset_counter():
     global count
     count = 0
-    return redirect('/counter')
+    return redirect('/lab1/counter')
 
 @app.route("/lab1/info")
 def info():
