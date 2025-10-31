@@ -365,7 +365,12 @@ def image():
         <h1>Дyб</h1>
         <img src="''' + path + '''">
     </body>
-</html>'''
+</html>''', 200, {
+        'Content-Language': 'ru-RU',  
+        'X-Image-Type': 'Nature',     
+        'X-Server-Location': 'Novosibirsk',  
+        'X-Student-Name': 'Chikirisova Anastasia' 
+    }
 
 count = 0
 
