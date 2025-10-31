@@ -279,13 +279,22 @@ def lab1():
         веб-приложений, сознательно предоставляющих лишь самые базовые возможности.</p>
         
         <a href="/">На главную</a>
+
+        <h2>Список роутов</h2>
         
         <ul>
             <li><a href="/lab1/author">Автор</a></li>
             <li><a href="/lab1/web">WEB</a></li>
             <li><a href="/lab1/image">Дуб</a></li>
             <li><a href="/lab1/counter">Счетчик</a></li>
-            <li><a href="/http_codes">Коды ответов HTTP</a></li>
+            <li><a href="/bad_request">400 - Bad Request</a></li>
+            <li><a href="/unauthorized">401 - Unauthorized</a></li>
+            <li><a href="/payment_required">402 - Payment Required</a></li>
+            <li><a href="/forbidden">403 - Forbidden</a></li>
+            <li><a href="/nonexistent_page">404 - Not Found</a></li>
+            <li><a href="/method_not_allowed">405 - Method Not Allowed</a></li>
+            <li><a href="/teapot">418 - I'm a teapot</a></li>
+            <li><a href="/server_error">500 - Internal Server Error</a></li>
         </ul>
     </body>
 </html>'''   
