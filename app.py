@@ -2,62 +2,164 @@ from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
+access_log = []
 
 @app.errorhandler(404)
 def not_found(err):
-    return '''
+    client_ip = request.remote_addr
+    access_time = datetime.datetime.now()
+    requested_url = request.url
+    
+    log_entry = {
+        'time': access_time,
+        'ip': client_ip,
+        'url': requested_url
+    }
+    access_log.append(log_entry)
+    
+    journal_html = ''
+    for entry in reversed(access_log):  
+        journal_html += f'''
+        <div class="log-entry">
+            [{entry["time"].strftime("%Y-%m-%d %H:%M:%S.%f")}, пользователь {entry["ip"]}] зашёл на адрес: {entry["url"]}
+        </div>'''
+    
+    return f'''
 <!doctype html>
 <html>
     <head>
         <title>404 - Страница не найдена</title>
-        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+        <link rel="stylesheet" href="{url_for('static', filename='lab1.css')}">
         <style>
-            body {
+            body {{
                 text-align: center;
                 padding: 50px;
                 font-family: Arial, sans-serif;
-            }
-            h1 {
+                max-width: 1200px;
+                margin: 0 auto;
+                background-color: #f8f9fa;
+            }}
+            .error-container {{
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }}
+            h1 {{
+
                 font-size: 80px;
                 color: #ff6b6b;
                 margin: 0;
-            }
-            h2 {
+                text-align: center;
+            }}
+            h2 {{
                 color: #333;
                 margin: 20px 0;
-            }
-            img {
+                text-align: center;
+            }}
+            .info-box {{
+                background: #e9ecef;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 20px 0;
+            }}
+            .info-box p {{
+                margin: 5px 0;
+                color: #495057;
+            }}
+            .journal {{
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }}
+            .journal h3 {{
+                color: #333;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+                margin-top: 0;
+            }}
+            .log-entry {{
+                padding: 10px;
+                border-bottom: 1px solid #dee2e6;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+            }}
+            .log-entry:last-child {{
+                border-bottom: none;
+            }}
+            .log-time {{
+                color: #6c757d;
+            }}
+            .log-user {{
+                color: #007bff;
+                font-weight: bold;
+            }}
+            .log-action {{
+                color: #28a745;
+            }}
+            .home-link {{
+                display: inline-block;
+                padding: 12px 24px;
+                background: #667eea;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;                
+                font-weight: bold;
+                margin: 20px 0;
+            }}
+            .home-link:hover {{
+                background: #5a67d8;
+                text-decoration: none;
+            }}
+            img {{
                 max-width: 500px;
                 margin: 20px auto;
+                display: block;
                 border-radius: 10px;
-            }
-            p {
-                color: #666;
-                max-width: 500px;
-                margin: 0 auto 20px;
-            }
-            a {
-                color: #667eea;
-                text-decoration: none;
-                font-weight: bold;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
+            }}
         </style>
     </head>
     <body>
-        <h1>404</h1>
-        <h2>Страница не найдена</h2>
+        <div class="error-container">
+            <h1>404</h1>
+            <h2>Страница не найдена</h2>
+            
+            <img src="{url_for('static', filename='404.png')}" alt="Страница не найдена">
+            
+            <div class="info-box">
+                <p><strong>Ваш IP-адрес:</strong> {client_ip}</p>
+                <p><strong>Дата и время доступа:</strong> {access_time.strftime('%Y-%m-%d %H:%M:%S')}</p>
+                <p><strong>Запрошенный адрес:</strong> {requested_url}</p>
+            </div>
+            
+            <p style="text-align: center; color: #666;">
+                Запрашиваемая страница не существует или была перемещена.<br>
+                Проверьте правильность адреса или вернитесь на главную страницу.
+            </p>
+            
+            <div style="text-align: center;">
+                <a href="/" class="home-link">← Вернуться на главную</a>
+            </div>
+        </div>
         
-        <img src="''' + url_for('static', filename='404.png') + '''" alt="Страница не найдена">
-        
-        <p>Запрашиваемая страница не существует или была перемещена.</p>
-        <p>Проверьте правильность адреса или вернитесь на главную страницу.</p>
-        
-        <a href="/">← Вернуться на главную</a>
+        <div class="journal">
+            <h3>Журнал:</h3>
+            {journal_html if journal_html else '<p>Пока нет записей в журнале</p>'}
+        </div>
     </body>
 </html>''', 404
+
+@app.before_request
+def log_all_requests():
+    if not request.path.startswith('/static/'):
+        log_entry = {
+            'time': datetime.datetime.now(),
+            'ip': request.remote_addr,
+            'url': request.url
+        }
+        access_log.append(log_entry)
 
 @app.route("/bad_request")
 def bad_request():
