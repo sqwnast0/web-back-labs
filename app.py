@@ -23,7 +23,7 @@ def lab1():
             </body>
         </html>"""    
 
-@app.route("/web")
+@app.route("/lab1/web")
 def web():
     return """<!doctype html>
         <html>
@@ -36,7 +36,7 @@ def web():
             'Content-Type': 'text/plain; charset=utf-8'
         }
 
-@app.route("/author")
+@app.route("/lab1/author")
 def author():
     name = "Чикирисова Анастасия Вячеславовна"
     group = "ФБИ-33"
@@ -56,11 +56,15 @@ def author():
 @app.route('/image') 
 def image():
     path = url_for("static", filename="oak.jpg")
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') +'''">
+    </head>
     <body>
-        <h1>Дy6</h1>
+        <h1>Дyб</h1>
         <img src="''' + path + '''">
     </body>
 </html>
