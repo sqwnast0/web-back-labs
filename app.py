@@ -547,19 +547,60 @@ def flowers(flower_id):
     if flower_id >= len(flower_list):
         abort(404)
     else:
-        return "id=" + flower_list[flower_id]
+        return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Информация о цветке</h1>
+        <p>ID: {flower_id}</p>
+        <p>Название: {flower_list[flower_id]}</p>
+        <a href='/lab2/flowers/>Вернуться к списку всех цветов</a>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/add_flower/')
+def add_flower_empty():
+    abort(400, description="вы не задали имя цветка")
 
 @app.route('/lab2/add_flower/<name>')
 def add_flower(name):
     flower_list.append(name)
     return f'''
-<doctype html>
+<!doctype html>
 <html>
     <body>
     <h1>Добавлен новый цветок</h1>
     <p>Название нового цветка:  {name} </p>
     <p>Всего цветов: {len(flower_list)}</p>
     <p>Полный список: {flower_list}</p>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/flowers/all')
+def all_flowers():
+    return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Все цветы</h1>
+        <p>Количество цветов: {len(flower_list)}</p>
+        <p>Полный список: {flower_list}</p>
+        <a href="/lab2/flowers/clear">Очистить список</a>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/flowers/clear')
+def clear_flowers():
+    flower_list.clear()
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Список цветов очищен</h1>
+        <a href="/lab2/flowers/all">Посмотреть все цветы</a>
     </body>
 </html>
 '''
