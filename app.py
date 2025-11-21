@@ -674,3 +674,199 @@ books = [
 @app.route('/lab2/books/')
 def books_list():
     return render_template('books.html', books=books)
+
+@app.route('/lab2/cars/')
+def cars():
+    cars_list = [
+        {
+            'name': 'Ford Mustang',
+            'year': '1964',
+            'description': 'Легендарный американский маслкар, символ свободы и скорости.',
+            'image': 'ford_mustang.jpg',
+            'country': 'США',
+            'type': 'Спортивный автомобиль'
+        },
+        {
+            'name': 'Volkswagen Beetle',
+            'year': '1938',
+            'description': 'Народный автомобиль, один из самых узнаваемых в мире.',
+            'image': 'Volkswagen_Beetle.jpg',
+            'country': 'Германия',
+            'type': 'Компактный автомобиль'
+        },
+        {
+            'name': 'Toyota Corolla',
+            'year': '1966',
+            'description': 'Самый продаваемый автомобиль в истории - надежность и практичность.',
+            'image': 'Toyota_Corolla.jpg',
+            'country': 'Япония',
+            'type': 'Седан'
+        },
+        {
+            'name': 'Ferrari F40',
+            'year': '1987',
+            'description': 'Легендарный суперкар, последний автомобиль, одобренный Энцо Феррари.',
+            'image': 'Ferrari_F40.jpg',
+            'country': 'Италия',
+            'type': 'Суперкар'
+        },
+        {
+            'name': 'Jeep Wrangler',
+            'year': '1986',
+            'description': 'Внедорожник с культовым дизайном, наследник военного Willys MB.',
+            'image': 'Jeep_Wrangler.jpg',
+            'country': 'США',
+            'type': 'Внедорожник'
+        },
+        {
+            'name': 'BMW 3 Series',
+            'year': '1975',
+            'description': 'Икона спортивных седанов, сочетание комфорта и динамики.',
+            'image': 'BMW3_Series.jpg',
+            'country': 'Германия',
+            'type': 'Спортивный седан'
+        },
+        {
+            'name': 'Lada Niva',
+            'year': '1977',
+            'description': 'Первый в мире моноприводный внедорожник, легенда российского автопрома.',
+            'image': 'Lada_Niva.jpg',
+            'country': 'Россия',
+            'type': 'Внедорожник'
+        },
+        {
+            'name': 'Porsche 911',
+            'year': '1963',
+            'description': 'Культовый спортивный автомобиль с задним расположением двигателя.',
+            'image': 'Porsche_911.jpg',
+            'country': 'Германия',
+            'type': 'Спортивный автомобиль'
+        },
+        {
+            'name': 'Honda Civic',
+            'year': '1972',
+            'description': 'Компактный автомобиль, ставший иконой тюнинговой культуры.',
+            'image': 'Honda_Civic.jpg',
+            'country': 'Япония',
+            'type': 'Компактный автомобиль'
+        },
+        {
+            'name': 'Mercedes-Benz S-Class',
+            'year': '1972',
+            'description': 'Флагманский седан, эталон роскоши и технологий.',
+            'image': 'Mercedes-Benz_S-Class.jpg',
+            'country': 'Германия',
+            'type': 'Представительский класс'
+        },
+        {
+            'name': 'Chevrolet Corvette',
+            'year': '1953',
+            'description': 'Американский спортивный автомобиль, символ автоиндустрии США.',
+            'image': 'Chevrolet_Corvette.jpg',
+            'country': 'США',
+            'type': 'Спортивный автомобиль'
+        },
+        {
+            'name': 'Volvo XC90',
+            'year': '2002',
+            'description': 'Премиальный внедорожник, известный своей безопасностью.',
+            'image': 'Volvo_XC90.jpg',
+            'country': 'Швеция',
+            'type': 'Внедорожник'
+        },
+        {
+            'name': 'Mazda MX-5 Miata',
+            'year': '1989',
+            'description': 'Легкий родстер, возродивший класс доступных спортивных автомобилей.',
+            'image': 'Mazda_MX-5_Miata.jpg',
+            'country': 'Япония',
+            'type': 'Родстер'
+        },
+        {
+            'name': 'Range Rover',
+            'year': '1970',
+            'description': 'Роскошный внедорожник, создавший новый класс автомобилей.',
+            'image': 'Range_Rover.jpg',
+            'country': 'Великобритания',
+            'type': 'Премиальный внедорожник'
+        },
+        {
+            'name': 'Tesla Model S',
+            'year': '2012',
+            'description': 'Электрический седан, изменивший представление об электромобилях.',
+            'image': 'Tesla_Model_S.jpg',
+            'country': 'США',
+            'type': 'Электромобиль'
+        },
+        {
+            'name': 'Audi Quattro',
+            'year': '1980',
+            'description': 'Легенда ралли, популяризировавший полный привод в гражданских авто.',
+            'image': 'Audi_Quattro.jpg',
+            'country': 'Германия',
+            'type': 'Спортивный автомобиль'
+        },
+        {
+            'name': 'Nissan GT-R',
+            'year': '2007',
+            'description': 'Японский суперкар, известный как "Богzilla" за свою производительность.',
+            'image': 'Nissan_GT-R.jpg',
+            'country': 'Япония',
+            'type': 'Суперкар'
+        },
+        {
+            'name': 'Fiat 500',
+            'year': '1957',
+            'description': 'Культовый городской автомобиль, символ итальянского стиля.',
+            'image': 'Fiat_500.jpg',
+            'country': 'Италия',
+            'type': 'Городской автомобиль'
+        },
+        {
+            'name': 'Lamborghini Countach',
+            'year': '1974',
+            'description': 'Суперкар с клиновидным дизайном, икона 1980-х годов.',
+            'image': 'Lamborghini_Countach.jpg',
+            'country': 'Италия',
+            'type': 'Суперкар'
+        },
+        {
+            'name': 'Subaru Impreza WRX',
+            'year': '1992',
+            'description': 'Легенда раллийных соревнований с оппозитным двигателем и полным приводом.',
+            'image': 'Subaru_Impreza_WRX.jpg',
+            'country': 'Япония',
+            'type': 'Спортивный седан'
+        }
+    ]
+    
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + url_for('static', filename='lab1.css') + '''">
+        <title>Коллекция автомобилей</title>
+    </head>
+    <body>
+        <h1>Коллекция легендарных автомобилей</h1>
+        <a href="/">На главную</a>
+        <div class="cars-container">
+            ''' + ''.join([f'''
+            <div class="car-card">
+                <h2>{car["name"]}</h2>
+                <img src="{url_for('static', filename=car['image'])}" alt="{car['name']}" width="300">
+                <div class="car-info">
+                    <p><strong>Год выпуска:</strong> {car["year"]}</p>
+                    <p><strong>Страна:</strong> {car["country"]}</p>
+                    <p><strong>Тип:</strong> {car["type"]}</p>
+                    <p><strong>Описание:</strong> {car["description"]}</p>
+                </div>
+            </div>
+            ''' for car in cars_list]) + '''
+        </div>
+    </body>
+</html>
+'''
+
+if __name__ == '__main__':
+    app.run(debug=True)
