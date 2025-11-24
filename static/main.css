@@ -61,6 +61,14 @@ img {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     object-fit: cover;
+    }
+
+.error {
+    color: #d32f2f;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block;
 }
 
 img:hover {
