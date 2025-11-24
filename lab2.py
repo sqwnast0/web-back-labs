@@ -1,14 +1,14 @@
 from flask import Blueprint, url_for, request, redirect, render_template, abort
 lab2 = Blueprint('lab2', __name__)
 
-@app.route('/lab2/a')
+@lab2.route('/lab2/a')
 def a():
     return 'без слэша'
 
-@app.route('/lab2/a/')
+
+@lab2.route('/lab2/a/')
 def a2():
     return 'со слэшем'
-
 flower_list = [
     {'name': 'астра', 'price': 300},
     {'name': 'незабудка', 'price': 310},
@@ -18,17 +18,21 @@ flower_list = [
     {'name': 'гладиолус', 'price': 310}
 ]
 
-@app.route('/lab2/flowers/')
+
+@lab2.route('/lab2/flowers/')
 def flowers_list():
     return render_template('flowers.html', flowers=flower_list)
-@app.route('/lab2/del_flower/<int:flower_id>')
+
+
+@lab2.route('/lab2/del_flower/<int:flower_id>')
 def del_flower(flower_id):  # ИЗМЕНИТЕ ИМЯ ФУНКЦИИ НА del_flower
     if flower_id >= len(flower_list):
         abort(404)
     flower_list.pop(flower_id)
-    return redirect(url_for('flowers_list'))
+    return redirect(url_for('lab2.flowers_list'))
 
-@app.route('/lab2/add_flower/', methods=['GET', 'POST'])
+
+@lab2.route('/lab2/add_flower/', methods=['GET', 'POST'])
 def add_flower():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
@@ -42,10 +46,11 @@ def add_flower():
             else:
                 # если нет, добавляем новый цветок с ценой 300
                 flower_list.append({'name': name, 'price': 300})
-        return redirect(url_for('flowers_list'))
-    return redirect(url_for('flowers_list'))
+        return redirect(url_for('lab2.flowers_list'))
+    return redirect(url_for('lab2.flowers_list'))
 
-@app.route('/lab2/flowers/all')
+
+@lab2.route('/lab2/flowers/all')
 def all_flowers():
     return f'''
 <!doctype html>
@@ -59,12 +64,13 @@ def all_flowers():
 </html>
 '''
 
-@app.route('/lab2/flowers/clear')
+@lab2.route('/lab2/flowers/clear')
 def clear_flowers():
     flower_list.clear()
-    return redirect(url_for('flowers_list'))
+    return redirect(url_for('lab2.flowers_list'))
 
-@app.route('/lab2/example')
+
+@lab2.route('/lab2/example')
 def example():
     name = 'Анастасия Чикирисова'
     group = 'ФБИ-33'
@@ -81,16 +87,19 @@ def example():
                            name=name, number=number, group=group, 
                            course=course, fruits=fruits)
 
-@app.route('/lab2/')
-def lab2():
+
+@lab2.route('/lab2/')
+def lab():
     return render_template('lab2.html')
 
-@app.route('/lab2/filters')
+
+@lab2.route('/lab2/filters')
 def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase = phrase)
 
-@app.route('/lab2/calc/<int:a>/<int:b>')
+
+@lab2.route('/lab2/calc/<int:a>/<int:b>')
 def calc(a, b):
     return f'''
 <!doctype html>
@@ -109,13 +118,15 @@ def calc(a, b):
 </html>
 '''
 
-@app.route('/lab2/calc/')
+@lab2.route('/lab2/calc/')
 def calc_default():
     return redirect('/lab2/calc/1/1')
 
-@app.route('/lab2/calc/<int:a>')
+
+@lab2.route('/lab2/calc/<int:a>')
 def calc_single(a):
     return redirect(f'/lab2/calc/{a}/1')
+
 
 books = [
     {'author': 'Фёдор Достоевский', 'title': 'Преступление и наказание', 'genre': 'Роман', 'pages': 671},
@@ -130,11 +141,13 @@ books = [
     {'author': 'Михаил Лермонтов', 'title': 'Герой нашего времени', 'genre': 'Роман', 'pages': 224},
 ]
 
-@app.route('/lab2/books/')
+
+@lab2.route('/lab2/books/')
 def books_list():
     return render_template('books.html', books=books)
 
-@app.route('/lab2/cars/')
+
+@lab2.route('/lab2/cars/')
 def cars():
     cars_list = [
         {
