@@ -177,3 +177,12 @@ def ticket():
                          baggage=baggage, age=age, departure=departure,
                          destination=destination, date=date, insurance=insurance,
                          ticket_type=ticket_type, total_price=total_price)
+
+@lab3.route('/lab3/clear_settings')
+def clear_settings():
+    resp = make_response(redirect('/lab3/settings'))
+    resp.set_cookie('color', '', expires=0)
+    resp.set_cookie('bg_color', '', expires=0)
+    resp.set_cookie('font_size', '', expires=0)
+    resp.set_cookie('font_family', '', expires=0)
+    return resp
