@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа {{ number }}{% endblock %}
+
+{% block main %}
+    <h1>Пример страницы</h1>
+    
+    <div class="calculations">
+        <h2>Математические вычисления:</h2>
+        5 + 2 = {{ 5 + 2 }}<br>
+        11 * 28 = {{ 11 * 28 }}<br>
+        3528 - 759 = {{ 3528 - 759 }}<br>
+        8452 / 793 = {{ (8452 / 793)|round(2) }}<br>
+        45<sup>8</sup> = {{ 45 ** 8 }}<br>
+    </div>
+
+    <div class="fruits-list">
+        <h2>Список фруктов:</h2>
+        <ul>
+            {% for f in fruits %}
+            <li>{{ loop.index }} - {{ f.name }}: {{ f.price }} &#8381;</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="student-info">
+        <h2>Информация о студенте:</h2>
+        <p><strong>Имя:</strong> {{ name }}</p>
+        <p><strong>Группа:</strong> {{ group }}</p>
+        <p><strong>Курс:</strong> {{ course }}</p>
+    </div>
+{% endblock %}

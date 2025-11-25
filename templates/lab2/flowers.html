@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Список цветов</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flower in flowers %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ flower.name }}</td>
+                <td>{{ flower.price }} руб</td>
+                <td>
+                    <a href="{{ url_for('lab2.del_flower', flower_id=loop.index0) }}" class="delete-link">удалить</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="empty-message">Нет цветов в списке</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <a href="{{ url_for('lab2.clear_flowers') }}" class="clear-all-link">Удалить все цветы</a>
+    </div>
+
+    <div class="add-form">
+        <h3>Добавить цветок:</h3>
+        <form method="post" action="{{ url_for('lab2.add_flower') }}">
+            <input type="text" name="name" placeholder="Название цветка" required>
+            <button type="submit">добавить</button>
+        </form>
+    </div>
+
+    <div class="refresh-link">
+        <a href="{{ url_for('lab2.flowers_list') }}">Обновить список</a>
+    </div>
+
+{% endblock %}
