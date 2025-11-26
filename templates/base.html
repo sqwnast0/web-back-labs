@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анастасия Чикирисова. {% block lab %}{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='lab2/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='lab2/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='lab2/favicon-16x16.png') }}">
     <style>
         body {
             {% if request.cookies.get('color') %}
@@ -61,9 +61,9 @@
         WEB-программирование, часть 2. {{ self.lab() }}
         <nav style="float: right;">
             <a href="/">Главная страница</a> 
-            <a href="/lab1/">Лабораторная работа 1</a>
-            <a href="/lab2/">Лабораторная работа 2</a>
-            <a href="/lab3/">Лабораторная работа 3</a>
+            <a href="/lab1">Лабораторная работа 1</a>
+            <a href="/lab2">Лабораторная работа 2</a>
+            <a href="/lab3">Лабораторная работа 3</a>
         </nav>
     </header>
 
@@ -76,3 +76,4 @@
     </footer>
 </body>
 </html>
+

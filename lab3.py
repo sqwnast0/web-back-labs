@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request, make_response, redirect
+from flask import Flask, render_template, request, make_response, Blueprint
 lab3 = Blueprint('lab3', __name__)
-
 
 @lab3.route('/lab3/')
 def lab():
@@ -186,3 +185,108 @@ def clear_settings():
     resp.set_cookie('font_size', '', expires=0)
     resp.set_cookie('font_family', '', expires=0)
     return resp
+
+
+products = [
+    {'name': 'Toyota Camry', 'price': 2500000, 'brand': 'Toyota', 'color': 'Белый', 'year': '2023'},
+    {'name': 'BMW X5', 'price': 6500000, 'brand': 'BMW', 'color': 'Черный', 'year': '2024'},
+    {'name': 'Mercedes-Benz C-Class', 'price': 4200000, 'brand': 'Mercedes-Benz', 'color': 'Серый', 'year': '2023'},
+    {'name': 'Honda Civic', 'price': 1800000, 'brand': 'Honda', 'color': 'Синий', 'year': '2024'},
+    {'name': 'Audi A4', 'price': 3800000, 'brand': 'Audi', 'color': 'Красный', 'year': '2023'},
+    {'name': 'Ford Focus', 'price': 1500000, 'brand': 'Ford', 'color': 'Оранжевый', 'year': '2022'},
+    {'name': 'Hyundai Solaris', 'price': 1200000, 'brand': 'Hyundai', 'color': 'Белый', 'year': '2024'},
+    {'name': 'Kia Rio', 'price': 1300000, 'brand': 'Kia', 'color': 'Серый', 'year': '2023'},
+    {'name': 'Volkswagen Tiguan', 'price': 2800000, 'brand': 'Volkswagen', 'color': 'Черный', 'year': '2024'},
+    {'name': 'Nissan Qashqai', 'price': 2200000, 'brand': 'Nissan', 'color': 'Синий', 'year': '2023'},
+    {'name': 'Lexus RX', 'price': 5500000, 'brand': 'Lexus', 'color': 'Белый', 'year': '2024'},
+    {'name': 'Mazda CX-5', 'price': 2400000, 'brand': 'Mazda', 'color': 'Красный', 'year': '2023'},
+    {'name': 'Skoda Octavia', 'price': 1900000, 'brand': 'Skoda', 'color': 'Зеленый', 'year': '2024'},
+    {'name': 'Volvo XC60', 'price': 4500000, 'brand': 'Volvo', 'color': 'Серый', 'year': '2023'},
+    {'name': 'Subaru Forester', 'price': 3200000, 'brand': 'Subaru', 'color': 'Синий', 'year': '2024'},
+    {'name': 'Renault Duster', 'price': 1600000, 'brand': 'Renault', 'color': 'Оранжевый', 'year': '2023'},
+    {'name': 'Chevrolet Cruze', 'price': 1400000, 'brand': 'Chevrolet', 'color': 'Черный', 'year': '2022'},
+    {'name': 'Peugeot 308', 'price': 2100000, 'brand': 'Peugeot', 'color': 'Белый', 'year': '2024'},
+    {'name': 'Citroen C4', 'price': 1700000, 'brand': 'Citroen', 'color': 'Серый', 'year': '2023'},
+    {'name': 'Lada Vesta', 'price': 900000, 'brand': 'Lada', 'color': 'Красный', 'year': '2024'}
+]
+
+@lab3.route('/lab3/products')
+def products_search():
+    try:
+        min_price_cookie = request.cookies.get('min_price')
+        max_price_cookie = request.cookies.get('max_price')
+        
+        all_prices = [product['price'] for product in products]
+        real_min_price = min(all_prices)
+        real_max_price = max(all_prices)
+        
+        min_price_input = request.args.get('min_price', '')
+        max_price_input = request.args.get('max_price', '')
+
+        if 'reset' in request.args:
+            resp = make_response(render_template('products.html',  
+                                               products=products,
+                                               min_price='',
+                                               max_price='',
+                                               real_min_price=real_min_price,
+                                               real_max_price=real_max_price,
+                                               filtered_count=len(products),
+                                               total_count=len(products)))
+            resp.set_cookie('min_price', '', expires=0)
+            resp.set_cookie('max_price', '', expires=0)
+            return resp
+
+        if min_price_input or max_price_input:
+            min_price = int(min_price_input) if min_price_input else real_min_price
+            max_price = int(max_price_input) if max_price_input else real_max_price
+            
+            if min_price > max_price:
+                min_price, max_price = max_price, min_price
+            
+            filtered_products = [
+                product for product in products 
+                if min_price <= product['price'] <= max_price
+            ]
+            
+            resp = make_response(render_template('products.html',  
+                                               products=filtered_products,
+                                               min_price=min_price,
+                                               max_price=max_price,
+                                               real_min_price=real_min_price,
+                                               real_max_price=real_max_price,
+                                               filtered_count=len(filtered_products),
+                                               total_count=len(products)))
+            resp.set_cookie('min_price', str(min_price))
+            resp.set_cookie('max_price', str(max_price))
+            return resp
+
+        if min_price_cookie and max_price_cookie:
+            min_price = int(min_price_cookie)
+            max_price = int(max_price_cookie)
+            
+            filtered_products = [
+                product for product in products 
+                if min_price <= product['price'] <= max_price
+            ]
+            
+            return render_template('products.html',  
+                                 products=filtered_products,
+                                 min_price=min_price,
+                                 max_price=max_price,
+                                 real_min_price=real_min_price,
+                                 real_max_price=real_max_price,
+                                 filtered_count=len(filtered_products),
+                                 total_count=len(products))
+ 
+        return render_template('products.html',  
+                             products=products,
+                             min_price='',
+                             max_price='',
+                             real_min_price=real_min_price,
+                             real_max_price=real_max_price,
+                             filtered_count=len(products),
+                             total_count=len(products))
+    
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        return f"Произошла ошибка: {e}", 500

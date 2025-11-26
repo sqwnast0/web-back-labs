@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Поиск автомобилей</h1>
+
+    <div class="search-form">
+        <form method="GET">
+            <div class="form-group">
+                <label for="min_price">Минимальная цена:</label>
+                <input type="number" id="min_price" name="min_price" 
+                       value="{{ min_price or '' }}" 
+                       placeholder="{{ real_min_price }}"
+                       min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="max_price">Максимальная цена:</label>
+                <input type="number" id="max_price" name="max_price" 
+                       value="{{ max_price or '' }}" 
+                       placeholder="{{ real_max_price }}"
+                       min="0">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" name="search">Искать</button>
+                <button type="submit" name="reset">Сброс</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-info">
+        {% if filtered_count == total_count %}
+            <p>Показаны все автомобили ({{ total_count }} шт.)</p>
+        {% else %}
+            <p>Найдено автомобилей: {{ filtered_count }} из {{ total_count }}</p>
+        {% endif %}
+    </div>
+
+    {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <h3>{{ product.name }}</h3>
+                <div class="product-price">{{ "{:,}".format(product.price) }} руб.</div>
+                <div class="product-details">
+                    <div><strong>Бренд:</strong> {{ product.brand }}</div>
+                    <div><strong>Цвет:</strong> {{ product.color }}</div>
+                    <div><strong>Год выпуска:</strong> {{ product.year }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            <p>Не найдено ни одного автомобиля в заданном диапазоне цен</p>
+        </div>
+    {% endif %}
+
+    <style>
+        .search-form {
+            background: rgba(232, 135, 209, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e887d1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f53a82;
+        }
+
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid #e887d1;
+            border-radius: 4px;
+            width: 200px;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #f53a82;
+            box-shadow: 0 0 5px rgba(245, 58, 130, 0.3);
+        }
+
+        .form-actions {
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button[name="search"] {
+            background: #f53a82;
+            color: white;
+        }
+
+        button[name="reset"] {
+            background: #e887d1;
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(232, 135, 209, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #f53a82;
+            color: #f53a82;
+            font-weight: bold;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            border: 2px solid #e887d1;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(232, 135, 209, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(232, 135, 209, 0.3);
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+            color: #f53a82;
+            border-bottom: 1px solid #e887d1;
+            padding-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f53a82;
+            margin: 15px 0;
+            text-align: center;
+            background: rgba(245, 58, 130, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .product-details div {
+            margin: 8px 0;
+            color: #666;
+            padding-left: 10px;
+            border-left: 3px solid #e887d1;
+        }
+
+        .product-details strong {
+            color: #f53a82;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            background: rgba(245, 58, 130, 0.1);
+            border-radius: 10px;
+            color: #f53a82;
+            border: 2px solid #f53a82;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #f53a82;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock %}
