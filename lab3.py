@@ -9,7 +9,7 @@ def lab():
     age = request.cookies.get('age')
     age = age if age else "Неизвестно"
     return render_template('/lab3/lab3.html', name=name, name_color=name_color, age=age)
-
+# ываываываыв
 
 @lab3.route('/lab3/cookie')
 def cookie():
