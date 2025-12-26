@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block lab %}{{ operation }}{% endblock %}
+
+{% block main %}
+    <h1>{{ operation }}</h1>
+    <p>{{ x1 }} {{ operation_symbol }} {{ x2 }} = {{ result }}</p>
+    <a href="/lab4/{{ operation|lower }}-form">Вернуться к форме</a>
+{% endblock %}
