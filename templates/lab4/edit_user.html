@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block lab %}Редактирование данных{% endblock %}
+
+{% block main %}
+    <h1>Редактирование данных пользователя</h1>
+    <form method="post">
+        <div>
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ user['first_name'] }} {{ user['last_name'] }}" required>
+        </div>
+        <div>
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" value="{{ user['login'] }}" required>
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" value="{{ user['password'] }}" required>
+        </div>
+        <div>
+            <label for="confirm_password">Подтверждение пароля:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+        <button type="submit">Сохранить изменения</button>
+    </form>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+{% endblock %}

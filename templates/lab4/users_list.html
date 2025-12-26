@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block lab %}Список пользователей{% endblock %}
+
+{% block main %}
+    <h1>Список пользователей</h1>
+    {% if not authorized %}
+        <p>Вы не авторизованы. <a href="/lab4/login">Войти</a></p>
+    {% else %}
+        <ul>
+            {% for user in users %}
+                <li>
+                    {{ user['first_name'] }} {{ user['last_name'] }} ({{ user['login'] }})
+                    {% if user['login'] == session['login'] %}
+                        <a href="/lab4/delete/{{ user['login'] }}">Удалить</a>
+                        <a href="/lab4/edit/{{ user['login'] }}">Редактировать</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

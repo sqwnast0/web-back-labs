@@ -1,4 +1,5 @@
 from flask import Flask, Blueprint, request, render_template, redirect, session
+import datetime
 
 lab4 = Blueprint('lab4', __name__)
 
@@ -139,43 +140,121 @@ def tree():
 
 # Список пользователей
 users = [
-    {'login': 'alex', 'password': '123'},
-    {'login': 'bob', 'password': '555'}
+    {'login': 'alex', 'password': '123', 'first_name': 'Иван', 'last_name': 'Иванов', 'gender': 'мужской'},
+    {'login': 'bob', 'password': '555', 'first_name': 'Александр', 'last_name': 'Смит', 'gender': 'мужской'}
 ]
 
-# Переменная для хранения информации о пользователе
-authorized = False
-login = ''
+# Страница регистрации
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    error = ''
+    if request.method == 'POST':
+        login = request.form.get('login')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        name = request.form.get('name')
 
-@lab4.route('/lab4/login', methods=['GET', 'POST'])
-def login():
-    global authorized, login, error
-    
-    if request.method == 'GET':
-        if 'login' in session:
-            authorized = True
-            login = session['login']
+        # Проверка на совпадение паролей
+        if password != confirm_password:
+            error = 'Пароли не совпадают'
+        # Проверка на наличие логина
+        elif any(user['login'] == login for user in users):
+            error = 'Пользователь с таким логином уже существует'
         else:
-            authorized = False
-            login = ''
-        return render_template('lab4/login.html', authorized=authorized, login=login, error="")
-    
+            # Добавляем нового пользователя в список
+            users.append({
+                'login': login,
+                'password': password,
+                'first_name': name.split()[0],  # Имя
+                'last_name': ' '.join(name.split()[1:]),  # Фамилия
+                'gender': 'не указан'  # Пол по умолчанию
+            })
+            return redirect('/lab4/login')  # Перенаправляем на страницу логина после успешной регистрации
+
+    return render_template('lab4/register.html', error=error)
+
+# Страница входа
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
+def loginnn():
+    error = ''
+    if request.method == 'GET':
+        if 'login' in session:  # Проверка, если пользователь уже авторизован
+            return redirect('/lab4/')  # Перенаправляем на главную страницу, если уже авторизован
+        return render_template('lab4/login.html', authorized=False, login='', error="")
+
+    # Получение данных из формы
     login = request.form.get('login')
     password = request.form.get('password')
-    
+
+    # Проверка на пустые поля
+    if not login:
+        error = 'Не введён логин'
+    elif not password:
+        error = 'Не введён пароль'
+
+    # Если ошибка пустых полей
+    if error:
+        return render_template('lab4/login.html', error=error, login=login)
+
     # Проверка логина и пароля
     for user in users:
         if login == user['login'] and password == user['password']:
-            session['login'] = login
-            return redirect('/lab4/login')
+            session['login'] = login  # Сохраняем логин в сессии
+            session['user'] = user  # Сохраняем информацию о пользователе в сессии
+            return redirect('/lab4/')  # Перенаправляем на главную страницу после успешной авторизации
 
-    # В случае неверного логина или пароля
-    error = 'Неверные логин и/или пароль'
-    authorized = False
-    return render_template('lab4/login.html', authorized=authorized, login=login, error=error)
+    error = 'Неверные логин и/или пароль'  # Ошибка, если логин или пароль неверные
+    return render_template('lab4/login.html', error=error, login=login)
+
+# Страница списка пользователей
+@lab4.route('/lab4/users')
+def users_list():
+    if 'login' not in session:
+        return redirect('/lab4/login')
+    
+    return render_template('lab4/users_list.html', users=users)
 
 # Логика выхода
 @lab4.route('/lab4/logout', methods=['POST'])
-def logout():
+def logouttt():
     session.pop('login', None)
+    session.pop('user', None)  # Удаляем информацию о пользователе из сессии
+    return redirect('/lab4/login')  # Перенаправление на страницу логина
+
+# Страница редактирования пользователя
+@lab4.route('/lab4/edit/<login>', methods=['GET', 'POST'])
+def edit_user(login):
+    if 'login' not in session or login != session['login']:
+        return redirect('/lab4/login')
+
+    user = next((u for u in users if u['login'] == login), None)
+    if not user:
+        return "Пользователь не найден", 404
+
+    error = ''
+    if request.method == 'POST':
+        name = request.form.get('name')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        # Проверка пароля
+        if password != confirm_password:
+            error = 'Пароли не совпадают'
+        else:
+            user['first_name'], user['last_name'] = name.split()[0], ' '.join(name.split()[1:])
+            user['password'] = password
+            return redirect('/lab4/users')
+
+    return render_template('lab4/edit_user.html', user=user, error=error)
+
+# Страница удаления пользователя
+@lab4.route('/lab4/delete/<login>', methods=['POST'])
+def delete_user(login):
+    if 'login' not in session or login != session['login']:
+        return redirect('/lab4/login')
+
+    global users
+    users = [u for u in users if u['login'] != login]
+    session.pop('login', None)
+    session.pop('user', None)
     return redirect('/lab4/login')
