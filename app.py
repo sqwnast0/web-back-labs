@@ -10,7 +10,7 @@ app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
-
+app.secret_key = 'секретно-секретный секрет'
 
 access_log = []
 

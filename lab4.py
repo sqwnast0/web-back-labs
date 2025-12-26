@@ -1,6 +1,9 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Flask, Blueprint, request, render_template, redirect, session
 
 lab4 = Blueprint('lab4', __name__)
+
+app = Flask(__name__)
+app.secret_key = 'секретно-секретный секрет'
 
 # Страница с основным списком ссылок
 @lab4.route('/lab4/')
@@ -110,6 +113,7 @@ def pow_numbers():
 
     result = x1 ** x2
     return render_template('lab4/result.html', result=result, operation="Возведение в степень", operation_symbol="^", x1=x1, x2=x2)
+
 # Начальное количество деревьев
 tree_count = 0
 
@@ -132,3 +136,46 @@ def tree():
         
         # Перенаправление на ту же страницу, чтобы предотвратить повторную отправку данных
         return redirect('/lab4/tree')
+
+# Список пользователей
+users = [
+    {'login': 'alex', 'password': '123'},
+    {'login': 'bob', 'password': '555'}
+]
+
+# Переменная для хранения информации о пользователе
+authorized = False
+login = ''
+
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
+def login():
+    global authorized, login, error
+    
+    if request.method == 'GET':
+        if 'login' in session:
+            authorized = True
+            login = session['login']
+        else:
+            authorized = False
+            login = ''
+        return render_template('lab4/login.html', authorized=authorized, login=login, error="")
+    
+    login = request.form.get('login')
+    password = request.form.get('password')
+    
+    # Проверка логина и пароля
+    for user in users:
+        if login == user['login'] and password == user['password']:
+            session['login'] = login
+            return redirect('/lab4/login')
+
+    # В случае неверного логина или пароля
+    error = 'Неверные логин и/или пароль'
+    authorized = False
+    return render_template('lab4/login.html', authorized=authorized, login=login, error=error)
+
+# Логика выхода
+@lab4.route('/lab4/logout', methods=['POST'])
+def logout():
+    session.pop('login', None)
+    return redirect('/lab4/login')
