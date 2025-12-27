@@ -2,31 +2,46 @@ from flask import Blueprint, render_template, request, session
 
 lab6 = Blueprint('lab6', __name__)
 
-# 10 офисов: number — номер, tenant — арендатор (пусто => свободен)
+# ---------- ДАННЫЕ ----------
 offices = []
 for i in range(1, 11):
-    offices.append({"number": i, "tenant": ""})
+    offices.append({
+        'number': i,
+        'tenant': '',
+        'price': 1000 + i * 500  # разная стоимость
+    })
 
-
+# ---------- СТРАНИЦА ----------
 @lab6.route('/lab6/')
 def main():
     return render_template('lab6/lab6.html')
 
-
+# ---------- JSON-RPC API ----------
 @lab6.route('/lab6/json-rpc-api/', methods=['POST'])
 def api():
     data = request.json
-    req_id = data.get('id')
+    id = data.get('id')
 
-    # info — вернуть список офисов
+    # ---------- INFO ----------
     if data.get('method') == 'info':
+        login = session.get('login')
+        total_price = 0
+
+        if login:
+            for office in offices:
+                if office['tenant'] == login:
+                    total_price += office['price']
+
         return {
             'jsonrpc': '2.0',
-            'result': offices,
-            'id': req_id
+            'result': {
+                'offices': offices,
+                'total_price': total_price
+            },
+            'id': id
         }
 
-    # для booking / cancellation нужна авторизация
+    # ---------- АВТОРИЗАЦИЯ ----------
     login = session.get('login')
     if not login:
         return {
@@ -35,10 +50,10 @@ def api():
                 'code': 1,
                 'message': 'Unauthorized'
             },
-            'id': req_id
+            'id': id
         }
 
-    # booking — забронировать офис
+    # ---------- BOOKING ----------
     if data.get('method') == 'booking':
         office_number = data.get('params')
 
@@ -51,63 +66,56 @@ def api():
                             'code': 2,
                             'message': 'Office already booked'
                         },
-                        'id': req_id
+                        'id': id
                     }
 
                 office['tenant'] = login
                 return {
                     'jsonrpc': '2.0',
                     'result': 'success',
-                    'id': req_id
+                    'id': id
                 }
 
-        return {
-            'jsonrpc': '2.0',
-            'error': {
-                'code': 3,
-                'message': 'Office not found'
-            },
-            'id': req_id
-        }
-
-    # cancellation — снять бронь (только если бронировал ты)
+    # ---------- CANCELLATION ----------
     if data.get('method') == 'cancellation':
         office_number = data.get('params')
 
         for office in offices:
             if office['number'] == office_number:
+
+                if not office['tenant']:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 5,
+                            'message': 'Office is not rented'
+                        },
+                        'id': id
+                    }
+
                 if office['tenant'] != login:
                     return {
                         'jsonrpc': '2.0',
                         'error': {
                             'code': 4,
-                            'message': 'Not your booking'
+                            'message': 'Not your office'
                         },
-                        'id': req_id
+                        'id': id
                     }
 
                 office['tenant'] = ''
                 return {
                     'jsonrpc': '2.0',
                     'result': 'success',
-                    'id': req_id
+                    'id': id
                 }
 
-        return {
-            'jsonrpc': '2.0',
-            'error': {
-                'code': 3,
-                'message': 'Office not found'
-            },
-            'id': req_id
-        }
-
-    # неизвестный метод (JSON-RPC стандарт: -32601)
+    # ---------- METHOD NOT FOUND ----------
     return {
         'jsonrpc': '2.0',
         'error': {
             'code': -32601,
             'message': 'Method not found'
         },
-        'id': req_id
+        'id': id
     }
