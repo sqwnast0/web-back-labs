@@ -3,14 +3,29 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-    <h1>Лабораторная работа 5 - Страница</h1>
-    <nav>
-        <ul>
+<h1>Лабораторная работа 5</h1>
+
+<nav>
+    <ul>
+        {% if session.get('login') %}
+            <li><a href="/lab5/create">Создать статью</a></li>
+            <li><a href="/lab5/list">Мои статьи</a></li>
+            <li><a href="/lab5/logout">Выйти</a></li>
+        {% else %}
             <li><a href="/lab5/login">Вход</a></li>
             <li><a href="/lab5/register">Регистрация</a></li>
-            <li><a href="/lab5/create">Создать статью</a></li>
-            <li><a href="/lab5/list">Список статей</a></li>
-        </ul>
-    </nav>
-    <h2>Добро пожаловать, {{ session.get('login', 'неавторизованный пользователь') }}</h2>
+        {% endif %}
+    </ul>
+</nav>
+
+<hr>
+
+{% if session.get('login') %}
+    <h2>Добро пожаловать, {{ session.get('login') }}</h2>
+    <p>Вы авторизованы и можете работать со статьями.</p>
+{% else %}
+    <h2>Вы не авторизованы</h2>
+    <p>Для работы со статьями войдите или зарегистрируйтесь.</p>
+{% endif %}
+
 {% endblock %}

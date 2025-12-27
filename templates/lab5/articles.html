@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 
-{% block lab %}Лабораторная работа 5{% endblock %}
+{% block lab %}Мои статьи{% endblock %}
 
 {% block main %}
 <h1>Мои статьи</h1>
 
-{% if articles %}
+{% if articles|length == 0 %}
+    <p><b>У вас пока нет ни одной статьи.</b></p>
+    <a href="/lab5/create">Создать первую статью</a>
+{% else %}
     {% for article in articles %}
-        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc;">
-            <h2>{{ article.title }}</h2>
-            <blockquote>{{ article.article_text }}</blockquote>
+        <div style="border:1px solid #ccc; padding:15px; margin-bottom:15px;">
+            <h3>{{ article.title }}</h3>
+
+            <p>{{ article.article_text }}</p>
+
             <small>Создано: {{ article.created_at }}</small>
+
+            <br><br>
+            <a href="/lab5/edit/{{ article.id }}"> Редактировать</a>
+
+            |
+            <a href="/lab5/delete/{{ article.id }}"
+               onclick="return confirm('Удалить статью?');">
+               🗑 Удалить
+            </a>
         </div>
     {% endfor %}
-{% else %}
-    <p>У вас пока нет статей.</p>
 {% endif %}
 
+<a href="/lab5">← Назад</a>
 {% endblock %}
