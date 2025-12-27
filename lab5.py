@@ -179,7 +179,7 @@ def list_articles():
 
         login_id = user['id']
 
-        # Получаем статьи пользователя
+        # Получаем статьи пользователя sdf
         cur.execute("""
             SELECT title, article_text, created_at
             FROM articles
