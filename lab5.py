@@ -156,3 +156,44 @@ def create():
     except Exception as e:
         error = f"Ошибка при добавлении статьи: {str(e)}"
         return render_template('lab5/create_article.html', error=error)
+    
+# Страница со списком статей пользователя
+@lab5.route('/lab5/list')
+def list_articles():
+    login = session.get('login')
+
+    # Если не авторизован — на логин
+    if not login:
+        return redirect('/lab5/login')
+
+    try:
+        conn, cur = db_connect()
+
+        # Получаем id пользователя
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+        user = cur.fetchone()
+
+        if not user:
+            db_close(conn, cur)
+            return redirect('/lab5/login')
+
+        login_id = user['id']
+
+        # Получаем статьи пользователя
+        cur.execute("""
+            SELECT title, article_text, created_at
+            FROM articles
+            WHERE login_id = %s
+            ORDER BY created_at DESC;
+        """, (login_id,))
+
+        articles = cur.fetchall()
+        db_close(conn, cur)
+
+        return render_template(
+            'lab5/articles.html',
+            articles=articles
+        )
+
+    except Exception as e:
+        return f"Ошибка при выводе статей: {e}"

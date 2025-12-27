@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<h1>Мои статьи</h1>
+
+{% if articles %}
+    {% for article in articles %}
+        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc;">
+            <h2>{{ article.title }}</h2>
+            <blockquote>{{ article.article_text }}</blockquote>
+            <small>Создано: {{ article.created_at }}</small>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет статей.</p>
+{% endif %}
+
+{% endblock %}
