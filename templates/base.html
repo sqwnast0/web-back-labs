@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='lab2/favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='lab2/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='lab2/favicon-16x16.png') }}">
+    {% block script %}{% endblock %}
     <style>
         body {
             {% if request.cookies.get('color') %}
@@ -66,6 +67,7 @@
             <a href="/lab3">Лабораторная работа 3</a>
             <a href="/lab4">Лабораторная работа 4</a>
             <a href="/lab5">Лабораторная работа 5</a>
+            <a href="/lab6">Лабораторная работа 6</a>
         </nav>
     </header>
 

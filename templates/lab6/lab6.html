@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 6{% endblock %}
+
+{% block script %}
+<script>
+    function getOfficeList() {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'info',
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(function(data) {
+            const office_list = data.result;
+            const ul = document.getElementById('office-list');
+
+            ul.innerHTML = '';
+
+            for (let i = 0; i < office_list.length; i++) {
+                const office = office_list[i];
+
+                const li = document.createElement('li');
+                li.innerText = `${office.number}: ${office.tenant || 'свободен'}`;
+
+                const bookingButton = document.createElement('button');
+                bookingButton.innerText = 'зарезервировать';
+                bookingButton.onclick = function() { booking(office.number); };
+
+                const cancelButton = document.createElement('button');
+                cancelButton.innerText = 'снять бронь';
+                cancelButton.onclick = function() { cancellation(office.number); };
+
+                li.appendChild(document.createTextNode(' '));
+                li.appendChild(bookingButton);
+                li.appendChild(document.createTextNode(' '));
+                li.appendChild(cancelButton);
+
+                ul.appendChild(li);
+            }
+        });
+    }
+
+    function booking(office_number) {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'booking',
+            'params': office_number,
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(function(data) {
+            if (data.error) {
+                switch (data.error.code) {
+                    case 1:
+                        alert('Нужно войти в систему');
+                        break;
+                    case 2:
+                        alert('Офис уже занят');
+                        break;
+                    default:
+                        alert(data.error.message);
+                }
+            }
+            getOfficeList();
+        });
+    }
+
+    function cancellation(office_number) {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'cancellation',
+            'params': office_number,
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(function(data) {
+            if (data.error) {
+                switch (data.error.code) {
+                    case 1:
+                        alert('Нужно войти в систему');
+                        break;
+                    case 4:
+                        alert('Можно снять бронь только со своего офиса');
+                        break;
+                    default:
+                        alert(data.error.message);
+                }
+            }
+            getOfficeList();
+        });
+    }
+
+    window.onload = function() {
+        getOfficeList();
+    };
+</script>
+{% endblock %}
+
+{% block main %}
+<h1>Список кабинетов</h1>
+<ul id="office-list"></ul>
+{% endblock %}
