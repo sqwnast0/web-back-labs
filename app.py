@@ -1,7 +1,9 @@
-# В файле app.py:
+# app.py
 
-from flask import Flask, url_for, request, session
+import os
 import datetime
+from flask import Flask, url_for, request
+
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
@@ -9,12 +11,18 @@ from lab4 import lab4
 from lab5 import lab5
 
 app = Flask(__name__)
+
+# ✅ ВАЖНО: config задаём ДО register_blueprint
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+app.config['DB_TYPE'] = os.environ.get('DB_TYPE', 'postgres')  # ← чтобы lab5 не падал
+app.secret_key = app.config['SECRET_KEY']  # можно так оставить для совместимости
+
+# ✅ Регистрируем блюпринты
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
 app.register_blueprint(lab5)
-app.secret_key = 'секретно-секретный секрет'
 
 access_log = []
 
@@ -23,20 +31,17 @@ def not_found(err):
     client_ip = request.remote_addr
     access_time = datetime.datetime.now()
     requested_url = request.url
-    
-    log_entry = {
-        'time': access_time,
-        'ip': client_ip,
-        'url': requested_url
-    }
+
+    log_entry = {'time': access_time, 'ip': client_ip, 'url': requested_url}
     access_log.append(log_entry)
-    
+
     journal_html = ''
-    for entry in reversed(access_log):  
+    for entry in reversed(access_log):
         journal_html += f'''
         <div class="log-entry">
-            [{entry["time"].strftime("%Y-%m-%d %H:%M:%S.%f")}, пользователь {entry["ip"]}] зашёл на адрес: {entry["url"]}</div>'''
-    
+            [{entry["time"].strftime("%Y-%m-%d %H:%M:%S.%f")}, пользователь {entry["ip"]}] зашёл на адрес: {entry["url"]}
+        </div>'''
+
     return f'''
 <!doctype html>
 <html>
@@ -101,23 +106,13 @@ def not_found(err):
             .log-entry:last-child {{
                 border-bottom: none;
             }}
-            .log-time {{
-                color: #6c757d;
-            }}
-            .log-user {{
-                color: #007bff;
-                font-weight: bold;
-            }}
-            .log-action {{
-                color: #28a745;
-            }}
             .home-link {{
                 display: inline-block;
                 padding: 12px 24px;
                 background: #667eea;
                 color: white;
                 text-decoration: none;
-                border-radius: 5px;                
+                border-radius: 5px;
                 font-weight: bold;
                 margin: 20px 0;
             }}
@@ -137,25 +132,25 @@ def not_found(err):
         <div class="error-container">
             <h1>404</h1>
             <h2>Страница не найдена</h2>
-            
+
             <img src="{url_for('static', filename='lab1/404.png')}" alt="Страница не найдена">
-            
+
             <div class="info-box">
                 <p><strong>Ваш IP-адрес:</strong> {client_ip}</p>
                 <p><strong>Дата и время доступа:</strong> {access_time.strftime('%Y-%m-%d %H:%M:%S')}</p>
                 <p><strong>Запрошенный адрес:</strong> {requested_url}</p>
             </div>
-            
+
             <p style="text-align: center; color: #666;">
                 Запрашиваемая страница не существует или была перемещена.<br>
                 Проверьте правильность адреса или вернитесь на главную страницу.
             </p>
-            
+
             <div style="text-align: center;">
                 <a href="/" class="home-link">← Вернуться на главную</a>
             </div>
         </div>
-        
+
         <div class="journal">
             <h3>Журнал:</h3>
             {journal_html if journal_html else '<p>Пока нет записей в журнале</p>'}
@@ -163,18 +158,18 @@ def not_found(err):
     </body>
 </html>''', 404
 
+
 @app.before_request
 def log_all_requests():
     if not request.path.startswith('/static/'):
-        log_entry = {
+        access_log.append({
             'time': datetime.datetime.now(),
             'ip': request.remote_addr,
             'url': request.url
-        }
-        access_log.append(log_entry)
+        })
+
 
 @app.route("/")
-
 @app.route("/index")
 def index():
     return '''
@@ -191,7 +186,7 @@ def index():
         <header>
             <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
         </header>
-        
+
         <main>
             <nav>
                 <ul>
@@ -199,17 +194,18 @@ def index():
                     <li><a href="/lab2">Вторая лабораторная</a></li>
                     <li><a href="/lab3">Третья лабораторная</a></li>
                     <li><a href="/lab4">Четвёртая лабораторная</a></li>
-                    <li><a href="/lab5">Пятая лабораторная</a></li>
+                    <li><a href="/lab5/">Пятая лабораторная</a></li>
                 </ul>
             </nav>
         </main>
-        
+
         <footer>
             <hr>
             &copy; Чикирисова Анастасия Вячеславовна, ФБИ-33, 3 курс, 2025
         </footer>
     </body>
-</html>'''   
+</html>'''
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
