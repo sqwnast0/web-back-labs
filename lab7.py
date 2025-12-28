@@ -1,83 +1,73 @@
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, jsonify, abort
 
 lab7 = Blueprint('lab7', __name__)
 
-# ------------------ ДАННЫЕ ------------------
-
+# ---------- ДАННЫЕ ----------
 films = [
     {
         "title": "Interstellar",
         "title_ru": "Интерстеллар",
         "year": 2014,
-        "description": "Когда засуха и вымирание растений приводят человечество "
-                       "к продовольственному кризису, группа исследователей "
-                       "отправляется в путешествие сквозь червоточину."
+        "description": "Научно-фантастический фильм о путешествиях сквозь пространство и время."
     },
     {
         "title": "The Shawshank Redemption",
         "title_ru": "Побег из Шоушенка",
         "year": 1994,
-        "description": "Бухгалтер Энди Дюфрейн осуждён за убийство жены и её любовника "
-                       "и отправлен в тюрьму Шоушенк."
+        "description": "История надежды и свободы."
     },
     {
         "title": "The Green Mile",
         "title_ru": "Зелёная миля",
         "year": 1999,
-        "description": "История тюремного надзирателя и необычного заключённого, "
-                       "обладающего сверхъестественными способностями."
-    },
-    {
-        "title": "Inception",
-        "title_ru": "Начало",
-        "year": 2010,
-        "description": "Профессиональный вор проникает в сны людей, чтобы украсть идеи."
+        "description": "Драма о чуде и человечности."
     },
     {
         "title": "Fight Club",
         "title_ru": "Бойцовский клуб",
         "year": 1999,
-        "description": "История человека, который создаёт подпольный бойцовский клуб."
+        "description": "Психологический триллер."
+    },
+    {
+        "title": "Inception",
+        "title_ru": "Начало",
+        "year": 2010,
+        "description": "Фантастика о снах внутри снов."
     }
 ]
 
-# ------------------ СТРАНИЦА ------------------
-
+# ---------- СТРАНИЦА ----------
 @lab7.route('/lab7/')
-def main():
+def index():
     return render_template('lab7/index.html')
 
-# ------------------ REST API ------------------
-
-# Получить все фильмы
+# ---------- REST API ----------
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
-    return films
+    return jsonify(films)
 
-
-# Получить один фильм
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
     if id < 0 or id >= len(films):
         abort(404)
-    return films[id]
+    return jsonify(films[id])
 
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film = request.get_json()
+    films.append(film)
+    return jsonify({"id": len(films) - 1})
 
-# Удалить фильм
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
+def edit_film(id):
+    if id < 0 or id >= len(films):
+        abort(404)
+    films[id] = request.get_json()
+    return jsonify(films[id])
+
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
-def del_film(id):
+def delete_film(id):
     if id < 0 or id >= len(films):
         abort(404)
     del films[id]
     return '', 204
-
-
-# Редактировать фильм
-@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
-def put_film(id):
-    if id < 0 or id >= len(films):
-        abort(404)
-
-    film = request.get_json()
-    films[id] = film
-    return films[id]
