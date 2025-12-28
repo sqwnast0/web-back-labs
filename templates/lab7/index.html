@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 7{% endblock %}
+
+{% block script %}
+<script>
+function loadFilms() {
+    fetch('/lab7/rest-api/films/')
+        .then(r => r.json())
+        .then(data => {
+            const ul = document.getElementById('films');
+            ul.innerHTML = '';
+
+            data.forEach((film, index) => {
+                const li = document.createElement('li');
+
+                li.innerHTML = `
+                    <b>${film.title_ru}</b> (${film.year})<br>
+                    ${film.description}<br>
+                    <button onclick="editFilm(${index})">Редактировать</button>
+                    <button onclick="deleteFilm(${index})">Удалить</button>
+                `;
+
+                ul.appendChild(li);
+            });
+        });
+}
+
+function deleteFilm(id) {
+    if (!confirm('Удалить фильм?')) return;
+
+    fetch('/lab7/rest-api/films/' + id, {
+        method: 'DELETE'
+    }).then(() => loadFilms());
+}
+
+function editFilm(id) {
+    fetch('/lab7/rest-api/films/' + id)
+        .then(r => r.json())
+        .then(film => {
+            const title = prompt('Название (eng):', film.title);
+            const title_ru = prompt('Название (ru):', film.title_ru);
+            const year = prompt('Год:', film.year);
+            const description = prompt('Описание:', film.description);
+
+            const updatedFilm = {
+                title,
+                title_ru,
+                year: Number(year),
+                description
+            };
+
+            fetch('/lab7/rest-api/films/' + id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedFilm)
+            })
+            .then(r => r.json())
+            .then(() => loadFilms());
+        });
+}
+
+document.addEventListener('DOMContentLoaded', loadFilms);
+</script>
+{% endblock %}
+
+{% block main %}
+<h2>Список фильмов</h2>
+<ul id="films"></ul>
+{% endblock %}

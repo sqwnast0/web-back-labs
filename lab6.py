@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, session
 
 lab6 = Blueprint('lab6', __name__)
 
-# ---------- ДАННЫЕ ----------
+
 offices = []
 for i in range(1, 11):
     offices.append({
@@ -11,18 +11,18 @@ for i in range(1, 11):
         'price': 1000 + i * 500  # разная стоимость
     })
 
-# ---------- СТРАНИЦА ----------
+
 @lab6.route('/lab6/')
 def main():
     return render_template('lab6/lab6.html')
 
-# ---------- JSON-RPC API ----------
+
 @lab6.route('/lab6/json-rpc-api/', methods=['POST'])
 def api():
     data = request.json
     id = data.get('id')
 
-    # ---------- INFO ----------
+
     if data.get('method') == 'info':
         login = session.get('login')
         total_price = 0
@@ -41,7 +41,6 @@ def api():
             'id': id
         }
 
-    # ---------- АВТОРИЗАЦИЯ ----------
     login = session.get('login')
     if not login:
         return {
@@ -53,7 +52,7 @@ def api():
             'id': id
         }
 
-    # ---------- BOOKING ----------
+
     if data.get('method') == 'booking':
         office_number = data.get('params')
 
@@ -76,7 +75,7 @@ def api():
                     'id': id
                 }
 
-    # ---------- CANCELLATION ----------
+
     if data.get('method') == 'cancellation':
         office_number = data.get('params')
 
@@ -110,7 +109,7 @@ def api():
                     'id': id
                 }
 
-    # ---------- METHOD NOT FOUND ----------
+
     return {
         'jsonrpc': '2.0',
         'error': {
