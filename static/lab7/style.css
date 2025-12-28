@@ -1,0 +1,68 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+th {
+    background: #f0f0f0;
+}
+
+tr:nth-child(even) {
+    background: #fafafa;
+}
+
+button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    background: #4a76a8;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3a5f87;
+}
+
+button.delete {
+    background: #c0392b;
+}
+
+button.delete:hover {
+    background: #a93226;
+}
+
+.error-message {
+    color: #c0392b;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+/* простая модалка */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 6px;
+}
