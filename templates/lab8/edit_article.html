@@ -1,0 +1,9 @@
+<h2>Редактирование статьи</h2>
+
+<form method="post">
+    <input type="text" name="title" value="{{ article.title }}" required><br><br>
+    <textarea name="article_text" rows="10" required>{{ article.article_text }}</textarea><br><br>
+    <button type="submit">Сохранить</button>
+</form>
+
+<a href="/lab5/list">Назад</a>

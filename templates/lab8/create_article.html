@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h1>Создание статьи</h1>
+    <form method="POST">
+        <div>
+            <label>Название статьи:</label>
+            <input type="text" name="title" maxlength="50">
+        </div>
+
+        <div>
+            <label>Текст статьи:</label>
+            <textarea name="article_text"></textarea>
+        </div>
+
+        <div>
+            <button type="submit">Готово</button>
+        </div>
+    </form>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+{% endblock %}

@@ -3,7 +3,7 @@
 import os
 import datetime
 from flask import Flask, url_for, request
-
+from db import db
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
@@ -19,6 +19,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
 app.config['DB_TYPE'] = os.environ.get('DB_TYPE', 'postgres')  # ← чтобы lab5 не падал
 app.secret_key = app.config['SECRET_KEY']  # можно так оставить для совместимости
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Используем SQLite для разработки
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Отключаем отслеживание изменений
+db.init_app(app)
 
 # ✅ Регистрируем блюпринты
 app.register_blueprint(lab1)
@@ -29,6 +32,9 @@ app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
+
+
+
 
 access_log = []
 
@@ -203,6 +209,7 @@ def index():
                     <li><a href="/lab5/">Пятая лабораторная</a></li>
                     <li><a href="/lab6/">Шестая лабораторная</a></li>
                     <li><a href="/lab7/">Cедьмая лабораторная</a></li>
+                    <li><a href="/lab8/">Восьмая лабораторная</a></li>
                 </ul>
             </nav>
         </main>
