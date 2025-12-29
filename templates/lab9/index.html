@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поздравления с Новым Годом</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .gift-box { width: 100px; height: 100px; background-color: #f8c200; margin: 10px; display: inline-block; cursor: pointer; position: relative; }
+        .gift-box img { width: 100%; height: 100%; }
+        .message { position: absolute; top: 110%; left: 0; right: 0; text-align: center; background: #fff; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+        .remaining { margin-top: 20px; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Поздравления с Новым Годом!</h1>
+    
+    {% for box in boxes %}
+    <div class="gift-box" id="box-{{ box.id }}" onclick="openBox({{ box.id }})">
+        {% if box.opened %}
+            <img src="{{ url_for('static', filename='2.jpg') }}" alt="Подарок открыт">
+        {% else %}
+            <img src="{{ url_for('static', filename='11.jpg') }}" alt="Подарок закрыт">
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <div class="remaining">
+        Оставшихся коробок: {{ remaining }}
+    </div>
+
+    <div id="result"></div>
+    
+    <button onclick="resetBoxes()">Сбросить коробки (Только для авторизованных)</button>
+
+    <script>
+        function openBox(boxId) {
+            fetch('/lab9/open/' + boxId, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('box-' + boxId).innerHTML = `<img src='/static/${data.gift}' />`;
+                    document.getElementById('result').innerHTML = `<div>${data.message}</div>`;
+                    document.querySelector('.remaining').innerText = 'Оставшихся коробок: ' + data.remaining;
+                }
+            });
+        }
+
+        function resetBoxes() {
+            fetch('/lab9/reset', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
