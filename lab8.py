@@ -9,7 +9,7 @@ from flask import Blueprint, render_template, request, jsonify, abort
 
 lab8 = Blueprint('lab8', __name__)
 
-# еее sdf
+# еее sdf ыва
 def exec_query(cur, db_type, query, params=()):
     if db_type == 'postgres':
         cur.execute(query.replace('?', '%s'), params)
